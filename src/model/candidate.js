@@ -25,6 +25,10 @@ const candidateSchema = new mongoose.Schema({
     otp:{
         type:Number,  
     },
+    deleted:{
+        type :Boolean,
+        default : false
+    },
     isVerify:{
         type:Boolean,
         default:false 

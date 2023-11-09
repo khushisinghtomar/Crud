@@ -125,11 +125,11 @@ module.exports.profile = async(req,res)=> {
     console.log(email)
     const user = await candidateSchema.findOne({email});
     console.log(user)
-    if(!user){
+    if(user && user?.deleted == true){
         res.status(404).json({
             message:"user not found"
         })
-    }else{
+    }else if(user?.deleted == false && user) {
         res.status(200).json({
             message : "user data retrive successfullyy",
             user
@@ -207,4 +207,23 @@ module.exports.Cdelete = async(req,res)=>{
             console.log(error);
             res.status(500).json({ message: `Server error ${error.message}` });
     }
+}
+
+module.exports.softDelete = async(req,res)=>{
+ try {
+    const userId = req.user.id
+    console.log(userId)
+    const updatedUser = await candidateSchema.findByIdAndUpdate(userId,
+    {deleted : true} , {new : true , upsert : true}
+    )
+    return res.status(200).send({
+        status : true,
+        message : "Data Deleted Successfully"
+    })
+ } catch (error) {
+    return res.status(500).send({
+        status : false,
+        message : error.message
+    })
+ }
 }
